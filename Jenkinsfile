@@ -67,14 +67,14 @@ def getChangeString() {
 }
 
 
-@groovy.transform.Canonical
+
 class MessageAttachment {
     String text
     String fallback
     ArrayList<MessageAction> actions
 }
 
-@groovy.transform.Canonical
+
 class MessageAction {
     String type
     String text
