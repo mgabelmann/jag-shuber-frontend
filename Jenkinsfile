@@ -84,7 +84,7 @@ if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
       // tag/retag the image to ensure it's there for the next stage of the build.
       openshiftTag destStream: NGINX_BUILD_CONFIG, verbose: 'true', destTag: 'latest', srcStream: NGINX_BUILD_CONFIG, srcTag: "${NGINX_IMAGE_HASH}"
 
-      def attachments = "{[\
+      def attachments = "[\
         {\
           'text':'Shuber Deployed to Dev',\
           'fallback':'Shuber Deployed to Dev',\
@@ -92,14 +92,14 @@ if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
             {'type':'button','text':'View','url':'#viewthat','style':'primary'}\
           ]\
         }\
-      ]}"
+      ]"
       // def attachments = [
       //   new MessageAttachment("Shuber Deployed to Dev","Shuber Deployed to Dev",[
       //       new MessageAction("button","View","https://frontend-jag-shuber-dev.pathfinder.gov.bc.ca/","standard"),
       //       new MessageAction("button","Deploy","${env.BUILD_URL}input","primary")            
       //     ])
       // ]   
-      slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: attachments)
+      slackSend(color: 'good', channel: "SLACK_CHANNEL", attachments: attachments)
 
     }
   }
