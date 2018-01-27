@@ -67,23 +67,6 @@ def getChangeString() {
 }
 
 
-
-class MessageAttachment {
-    String text
-    String fallback
-    ArrayList<MessageAction> actions
-}
-
-
-class MessageAction {
-    String type
-    String text
-    String url
-    String style
-}
-
-
-
 // Check if there are changes within the context directory 
 if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
   stage('build nginx runtime') {
@@ -100,6 +83,24 @@ if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
       
       // tag/retag the image to ensure it's there for the next stage of the build.
       openshiftTag destStream: NGINX_BUILD_CONFIG, verbose: 'true', destTag: 'latest', srcStream: NGINX_BUILD_CONFIG, srcTag: "${NGINX_IMAGE_HASH}"
+
+      def attachments = "{[\
+        {\
+          'text':'Shuber Deployed to Dev',\
+          'fallback':'Shuber Deployed to Dev',\
+          'actions':[\
+            {'type':'button','text':'View','url':'#viewthat','style':'primary'}\
+          ]\
+        }\
+      ]"
+      // def attachments = [
+      //   new MessageAttachment("Shuber Deployed to Dev","Shuber Deployed to Dev",[
+      //       new MessageAction("button","View","https://frontend-jag-shuber-dev.pathfinder.gov.bc.ca/","standard"),
+      //       new MessageAction("button","Deploy","${env.BUILD_URL}input","primary")            
+      //     ])
+      // ]   
+      slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: attachments)
+
     }
   }
   
@@ -119,15 +120,7 @@ if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
   
   stage('deploy-' + TAG_NAMES[0]) {
     node{
-      openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: IMAGESTREAM_NAME, srcTag: "${IMAGE_HASH}"
-      
-      def attachments = [
-        new MessageAttachment("Shuber Deployed to Dev","Shuber Deployed to Dev",[
-            new MessageAction("button","View","https://frontend-jag-shuber-dev.pathfinder.gov.bc.ca/","standard"),
-            new MessageAction("button","Deploy","${env.BUILD_URL}input","primary")            
-          ])
-      ]   
-      slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: new groovy.json.JsonBuilder(attachments).toString())
+      openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: IMAGESTREAM_NAME, srcTag: "${IMAGE_HASH}"    
     }
   }
 
@@ -136,12 +129,12 @@ if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
     node{
       openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[1], srcStream: IMAGESTREAM_NAME, srcTag: "${IMAGE_HASH}"
 
-      def attachments = [
-        new MessageAttachment("Shuber Deployed to Test","Shuber Deployed to Dev",[
-            new MessageAction("button","View","https://frontend-jag-shuber-test.pathfinder.gov.bc.ca/","standard")            
-          ])
-      ]    
-      slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: new groovy.json.JsonBuilder(attachments).toString())
+      // def attachments = [
+      //   new MessageAttachment("Shuber Deployed to Test","Shuber Deployed to Dev",[
+      //       new MessageAction("button","View","https://frontend-jag-shuber-test.pathfinder.gov.bc.ca/","standard")            
+      //     ])
+      // ]    
+      // slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: new groovy.json.JsonBuilder(attachments).toString())
 
     }
   }
