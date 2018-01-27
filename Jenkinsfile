@@ -1,6 +1,3 @@
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 // Edit your app's name below
 def APP_NAME = 'frontend'
 def SLACK_CHANNEL = "#sheriffmvp_dev"
@@ -123,15 +120,14 @@ if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
     node{
       openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[0], srcStream: IMAGESTREAM_NAME, srcTag: "${IMAGE_HASH}"
       
-      JSONArray attachments = new JSONArray()
-      attachments.add(
+      def attachments = [
         new MessageAttachment("Shuber Deployed to Dev","Shuber Deployed to Dev",[
             new MessageAction("button","View","https://frontend-jag-shuber-dev.pathfinder.gov.bc.ca/","standard"),
             new MessageAction("button","Deploy","${env.BUILD_URL}input","primary")            
           ])
-      );     
+      ];     
     
-      slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: attachments.toString())
+      slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: new groovy.json.JsonBuilder(attachments).toString())
     }
   }
 
@@ -140,14 +136,12 @@ if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
     node{
       openshiftTag destStream: IMAGESTREAM_NAME, verbose: 'true', destTag: TAG_NAMES[1], srcStream: IMAGESTREAM_NAME, srcTag: "${IMAGE_HASH}"
 
-      JSONArray attachments = new JSONArray()
-      attachments.add(
+      def attachments = [
         new MessageAttachment("Shuber Deployed to Test","Shuber Deployed to Dev",[
             new MessageAction("button","View","https://frontend-jag-shuber-test.pathfinder.gov.bc.ca/","standard")            
           ])
-      );
-    
-      slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: attachments.toString())
+      ];    
+      slackSend(color: 'good', channel: SLACK_CHANNEL, attachments: new groovy.json.JsonBuilder(attachments).toString())
 
     }
   }
