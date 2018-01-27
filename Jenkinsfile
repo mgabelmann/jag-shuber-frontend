@@ -92,7 +92,7 @@ if( DEBUG || triggerBuild(CONTEXT_DIRECTORY) ) {
             {'type':'button','text':'View','url':'#viewthat','style':'primary'}\
           ]\
         }\
-      ]"
+      ]}"
       // def attachments = [
       //   new MessageAttachment("Shuber Deployed to Dev","Shuber Deployed to Dev",[
       //       new MessageAction("button","View","https://frontend-jag-shuber-dev.pathfinder.gov.bc.ca/","standard"),
