@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+
 // Edit your app's name below
 def APP_NAME = 'frontend'
 def SLACK_CHANNEL = "#sheriffmvp_dev"
@@ -65,6 +67,7 @@ def getChangeString() {
   }
   return changeString
 }
+
 
 @groovy.transform.Canonical
 class MessageAttachment {
